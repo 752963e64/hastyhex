@@ -265,7 +265,9 @@ usage(FILE *f)
     "  -f       force output fully-buffered\n"
     "  -h       print this help message\n"
     "  -l       force output line-buffered\n"
+#ifdef _WIN32
     "  -o FILE  output to file instead of standard output\n"
+#endif
     "  -p       do output color (\"forced\")\n"
     "           will work thru everything that is not a tty\n"
     "  -V       print version information\n";
@@ -323,8 +325,10 @@ run(int argc, char **argv)
         case 'h': return usage(stdout) ? 0 : "write error";
         case 'l': buf_mode = BUF_LINE;
                   break;
+#ifdef _WIN32
         case 'o': outfile = xoptarg;
                   break;
+#endif
         case 'p': mode = MODE_COLOR;
                   break;
         case 'V': return version() ? 0 : "write error";
