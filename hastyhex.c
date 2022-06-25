@@ -287,14 +287,11 @@ run(int argc, char **argv)
     int option;
     FILE *in = stdin;
     FILE *out = stdout;
+#ifdef _WIN32
     const char *outfile = 0;
+#endif
     enum {MODE_COLOR, MODE_PLAIN} mode = MODE_COLOR;
     enum {BUF_AUTO, BUF_LINE, BUF_FULL} buf_mode = BUF_AUTO;
-    
-    if ( isatty( fileno(stdout) ) == 0 ) {
-        mode = MODE_PLAIN;
-    }
-    
     static char missing[] = "missing argument: -?";
     static char illegal[] = "illegal option: -?";
 
@@ -317,6 +314,10 @@ run(int argc, char **argv)
         }
     }
 #endif
+
+    if ( isatty( fileno(stdout) ) == 0 ) {
+        mode = MODE_PLAIN;
+    }
 
     while ((option = xgetopt(argc, argv, ":fhlo:pV")) != -1) {
         switch (option) {
