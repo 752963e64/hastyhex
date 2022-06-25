@@ -1,6 +1,7 @@
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 #define VERSION "1.0.0"
 
@@ -285,6 +286,9 @@ run(int argc, char **argv)
     FILE *out = stdout;
     const char *outfile = 0;
     enum {MODE_COLOR, MODE_PLAIN} mode = MODE_COLOR;
+    if ( isatty( fileno(stdout) ) == 0 ) {
+        mode = MODE_PLAIN;
+    }
     enum {BUF_AUTO, BUF_LINE, BUF_FULL} buf_mode = BUF_AUTO;
     static char missing[] = "missing argument: -?";
     static char illegal[] = "illegal option: -?";

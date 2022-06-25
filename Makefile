@@ -8,7 +8,7 @@ PREFIX  = /usr/local
 all: hastyhex$(EXE)
 
 hastyhex$(EXE): hastyhex.c
-	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ hastyhex.c $(LDLIBS)
+	$(CC) $(LDFLAGS) $(CFLAGS) -D_POSIX_C_SOURCE -o $@ hastyhex.c $(LDLIBS)
 
 install: hastyhex$(EXE)
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
