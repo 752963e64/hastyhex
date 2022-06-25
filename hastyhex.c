@@ -3,7 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define VERSION "1.0.0"
+#define VERSION "1.0.1a"
 
 static const char hex[16] = "0123456789abcdef";
 
