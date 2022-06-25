@@ -266,7 +266,8 @@ usage(FILE *f)
     "  -h       print this help message\n"
     "  -l       force output line-buffered\n"
     "  -o FILE  output to file instead of standard output\n"
-    "  -p       do not output color (\"plain\")\n"
+    "  -p       do output color (\"forced\")\n"
+    "           will work thru everything that is not a tty\n"
     "  -V       print version information\n";
     return fwrite(usage, sizeof(usage)-1, 1, f) && !fflush(f);
 }
@@ -286,10 +287,12 @@ run(int argc, char **argv)
     FILE *out = stdout;
     const char *outfile = 0;
     enum {MODE_COLOR, MODE_PLAIN} mode = MODE_COLOR;
+    enum {BUF_AUTO, BUF_LINE, BUF_FULL} buf_mode = BUF_AUTO;
+    
     if ( isatty( fileno(stdout) ) == 0 ) {
         mode = MODE_PLAIN;
     }
-    enum {BUF_AUTO, BUF_LINE, BUF_FULL} buf_mode = BUF_AUTO;
+    
     static char missing[] = "missing argument: -?";
     static char illegal[] = "illegal option: -?";
 
@@ -322,7 +325,7 @@ run(int argc, char **argv)
                   break;
         case 'o': outfile = xoptarg;
                   break;
-        case 'p': mode = MODE_PLAIN;
+        case 'p': mode = MODE_COLOR;
                   break;
         case 'V': return version() ? 0 : "write error";
         case ':': missing[sizeof(missing)-2] = xoptopt;
@@ -348,6 +351,7 @@ run(int argc, char **argv)
         }
     }
 
+#ifdef _WIN32
     /* Configure output */
     if (outfile) {
         out = fopen(outfile, "wb");
@@ -355,6 +359,8 @@ run(int argc, char **argv)
             return outfile;
         }
     }
+#endif
+
     switch (buf_mode) {
     static char buf[1L << 18];
     case BUF_AUTO: break;
